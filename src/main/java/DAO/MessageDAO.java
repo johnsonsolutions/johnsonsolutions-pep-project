@@ -2,7 +2,8 @@ package DAO;
 
 import Model.Message;
 
-import java.beans.Statement;
+//import java.beans.Statement;
+import java.sql.*;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,7 +21,7 @@ public class MessageDAO {
         Connection connection = ConnectionUtil.getConnection();
         try{
             String sql = "INSERT INTO Message (posted_by, message_text, time_posted_epoch) VALUES (?, ?, ?)";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
+            PreparedStatement preparedStatement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
             
             preparedStatement.setInt(1, message.getPosted_by());
             preparedStatement.setString(2, message.getMessage_text());
@@ -32,8 +33,6 @@ public class MessageDAO {
                 int genMsgId = (int) pkResultSet.getLong(1);
                 return new Message(genMsgId, message.getPosted_by(), message.getMessage_text(), message.getTime_posted_epoch());
             }
-            
-
         }
         catch(SQLException e){
             System.out.println(e.getMessage());

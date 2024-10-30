@@ -21,7 +21,7 @@ public class MessageService {
     public Message updateMessage(int id, Message message){
         Message hold = messageDAO.getMessageById(id);
 
-        if(hold != null){
+        if(hold != null && hold.getMessage_text() != ""){
             this.messageDAO.updateMessageText(id, message);
             return this.messageDAO.getMessageById(id);
         }

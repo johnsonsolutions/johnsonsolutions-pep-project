@@ -14,10 +14,14 @@ public class AccountService {
     }
 
     public Account addAccount(Account account){
+        if(!accountDAO.isValid(account)){ return null; }
+        if(accountDAO.isPresent(account)){ return null; }
         return accountDAO.registerAccount(account);
     }
-    public Account login(Account account){
-        if((!accountDAO.isDupe(account)) && (accountDAO.isValid(account))){
+    public Account login(Account account){ 
+        
+        if((accountDAO.isValid(account))){
+            if(!accountDAO.isPresent(account)){ return null; }
             return accountDAO.login(account);
         }
         return null;

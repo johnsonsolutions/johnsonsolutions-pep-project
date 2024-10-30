@@ -63,8 +63,10 @@ public class SocialMediaController {
     private void loginHandler(Context context) throws JsonProcessingException {
 
         Account account = context.bodyAsClass(Account.class);
+        //System.out.println(account);
 
         Account login = accountService.login(account);
+        //System.out.println(login);
 
         if(login != null){ context.json(login); context.status(200); }
         else{ context.status(401); }
@@ -94,7 +96,8 @@ public class SocialMediaController {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(context.body(), Message.class);
         Message addedMessage = messageService.addMessage(message);
-        if(addedMessage!=null){
+
+        if(addedMessage!=null && !(message.getMessage_text().trim().isEmpty())){
             context.json(mapper.writeValueAsString(addedMessage));
             //context.status(200);
         }
@@ -116,11 +119,12 @@ public class SocialMediaController {
     private void updateMessageHandler(Context context) throws JsonProcessingException {
         ObjectMapper mapper = new ObjectMapper();
         Message message = mapper.readValue(context.body(), Message.class);
-        Message hold = context.bodyAsClass(Message.class);
-        Message updMessage = messageService.updateMessage(hold.message_id, message);
+        int id = Integer.parseInt(context.pathParam("message_id"));
+        Message updMessage = messageService.updateMessage(id, message);
+
         if(updMessage != null){
             context.status(200);
-            context.json(mapper.writeValueAsString(updMessage));            
+            context.json(mapper.writeValueAsString(updMessage));
         }
         else{
             context.status(400);
