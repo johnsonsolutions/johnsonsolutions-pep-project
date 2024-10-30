@@ -4,10 +4,6 @@ import Model.Message;
 
 //import java.beans.Statement;
 import java.sql.*;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,6 +12,25 @@ import Model.Account;
 import Util.ConnectionUtil;
 
 public class MessageDAO {
+
+    public boolean isValid(Message message){
+        if (message == null || message.getMessage_text() == null) {
+            return false;
+        }
+        boolean[] checks = new boolean[]{
+            (message.getMessage_text().length() < 255),
+            (!message.getMessage_text().isEmpty())
+        };
+        for (boolean check : checks) {
+            if (!check) { return false; }
+        }
+        return true;
+    }
+    
+    public Message validate(Message message){ 
+        if(isValid(message)){ return message; }
+        else{ return null; }
+    }
 
     public Message createMessage(Message message){
         Connection connection = ConnectionUtil.getConnection();
